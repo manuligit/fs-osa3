@@ -1,0 +1,8 @@
+POST http://localhost:3001/notes
+content-type: applivation/json
+
+{
+    "content": "asdf",
+    "important": true,
+    "date": "Wed, 29 Oct 2018 18:27:50 GMT"
+}

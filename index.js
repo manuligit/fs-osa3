@@ -25,9 +25,13 @@ let persons =[
 ]
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
+  res.send('<h1>Persons</h1>')
 })
 
+app.get('/info', (req, res) => {
+  let timestamp = new Date()
+  res.send(`<p>puhelinluettelossa ${persons.length} henkilon tiedot <br /> ${timestamp}</p>`)
+})
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)

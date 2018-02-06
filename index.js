@@ -22,11 +22,6 @@ let persons =[
     "name": "Lea Kutvonen",
     "number": "040-123456",
     "id": 4
-  },
-  {
-    "name": "delet this",
-    "number": "666",
-    "id": 5
   }
 ]
 
@@ -70,6 +65,14 @@ const generateId = () => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
+
+  if (!body.name) {
+    return res.status(400).json({error: 'name missing'})
+  } else if (!body.number) {
+    return res.status(400).json({error: 'number missing'})
+  } else if (persons.find(person => person.name === body.name)) {
+    return res.status(400).json({error: 'duplicate name entry'})
+  }
 
   const person = {
     name: body.name,

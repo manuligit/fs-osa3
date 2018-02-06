@@ -1,5 +1,5 @@
 POST http://localhost:3001/notes
-content-type: applivation/json
+content-type: application/json
 
 {
     "content": "asdf",

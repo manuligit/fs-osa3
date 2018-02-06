@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const bodyPerser = require('body-parser')
 
 let persons =[
   {
@@ -28,6 +29,8 @@ let persons =[
     "id": 5
   }
 ]
+
+app.use(bodyPerser.json())
 
 app.get('/', (req, res) => {
   res.send('<h1>Persons</h1>')
@@ -59,6 +62,24 @@ app.delete('/api/persons/:id', (req, res) => {
   persons = persons.filter(person => person.id !== id)
 
   res.status(204).end()
+})
+
+const generateId = () => {
+  return Math.floor(Math.random() * Math.floor(100000))
+}
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId()
+  }
+
+  persons = persons.concat(person)
+
+  res.json(person)
 })
 
 

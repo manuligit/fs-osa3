@@ -21,6 +21,11 @@ let persons =[
     "name": "Lea Kutvonen",
     "number": "040-123456",
     "id": 4
+  },
+  {
+    "name": "delet this",
+    "number": "666",
+    "id": 5
   }
 ]
 
@@ -39,14 +44,21 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
-  console.log(id)
-  const person = persons.find(person => person.id.toString() === id.toString())
+  //console.log(id)
+  const person = persons.find(person => person.id === id)
 
   if (person) {
     res.json(person)
   } else {
     res.status(404).end()
   }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  persons = persons.filter(person => person.id !== id)
+
+  res.status(204).end()
 })
 
 

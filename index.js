@@ -3,7 +3,6 @@ const app = express()
 const bodyPerser = require('body-parser')
 const morgan = require('morgan')
 
-
 let persons =[
   {
     "name": "Arto Hellas",
@@ -28,7 +27,10 @@ let persons =[
 ]
 
 app.use(bodyPerser.json())
-app.use(morgan('tiny'))
+
+morgan.token('json', function(req, res) { return JSON.stringify(req.body) })
+
+app.use(morgan(':method :url :json :status :res[content-length] :response-time ms'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Persons</h1>')
@@ -38,7 +40,7 @@ app.get('/info', (req, res) => {
   let timestamp = new Date()
   res.send(`<p>puhelinluettelossa ${persons.length} henkilon tiedot <br /> ${timestamp}</p>`)
 })
-
+//method url {} id headers reqlength - response time 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
@@ -68,7 +70,7 @@ const generateId = () => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
-
+  morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
   if (!body.name) {
     return res.status(400).json({error: 'name missing'})
   } else if (!body.number) {
@@ -84,10 +86,8 @@ app.post('/api/persons', (req, res) => {
   }
 
   persons = persons.concat(person)
-
   res.json(person)
 })
-
 
 const PORT = 3001
 app.listen(PORT, () => {

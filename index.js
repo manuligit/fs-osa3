@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 const bodyPerser = require('body-parser')
+const morgan = require('morgan')
+
 
 let persons =[
   {
@@ -26,6 +28,7 @@ let persons =[
 ]
 
 app.use(bodyPerser.json())
+app.use(morgan('tiny'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Persons</h1>')

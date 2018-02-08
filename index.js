@@ -36,10 +36,6 @@ morgan.token('json', function(req, res) { return JSON.stringify(req.body) })
 
 app.use(morgan(':method :url :json :status :res[content-length] :response-time ms'))
 
-//app.get('/', (req, res) => {
-//  res.send('<h1>Persons</h1>')
-//})
-
 app.get('/info', (req, res) => {
   let timestamp = new Date()
   res.send(`<p>puhelinluettelossa ${persons.length} henkilon tiedot <br /> ${timestamp}</p>`)

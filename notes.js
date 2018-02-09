@@ -1,6 +1,17 @@
 const express = require('express')
 const app = express()
 const bodyPerser = require('body-parser')
+const cors = require('cors')
+const mongoose = require('mongoose')
+const secreturl = require('./secret')
+
+mongoose.connect(secreturl)
+
+const Note = mongoose.model('Note', {
+  content: String,
+  date: Date,
+  important: Boolean
+})
 
 let notes = [
   {
@@ -23,6 +34,7 @@ let notes = [
   }
 ]
 
+app.use(cors())
 app.use(bodyPerser.json())
 
 const generateId = () => {
@@ -55,6 +67,14 @@ app.get('/', (req, res) => {
 
 app.get('/notes', (req, res) => {
   res.json(notes)
+})
+
+app.get('/api/notes', (request, response) => {
+  Note
+    .find({})
+    .then(notes => {
+      response.json(notes)
+    })
 })
 
 app.get('/notes/:id', (request, response) => {

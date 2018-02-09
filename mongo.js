@@ -5,8 +5,7 @@ mongoose.connect(secreturl)
 
 const Person = mongoose.model('Person', {
   name: String,
-  number: String,
-  id: Number
+  number: String
 })
 
 const args = process.argv

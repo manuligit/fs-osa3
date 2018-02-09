@@ -3,6 +3,8 @@ const bodyPerser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+const mongoose = require('mongoose')
+const secreturl = require('./secret')
 
 let persons =[
   {
@@ -26,6 +28,13 @@ let persons =[
     "id": 4
   }
 ]
+
+mongoose.connect(secreturl)
+
+const Person = mongoose.model('Person', {
+  name: String,
+  number: String
+})
 
 app.use(express.static('build'))
 

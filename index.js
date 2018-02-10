@@ -45,20 +45,22 @@ app.get('/api/persons', (req, res) => {
   Person
     .find({})
     .then(persons => {
-      res.json(persons)
+      res.json(persons.map(Person.format))
+    })
+    .catch(error => {
+      console.log(error.name)
+      res.status(404).end()
     })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  //console.log(id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  Person.findById(req.params.id)
+    .then(person => {
+      res.json(Person.format(person))
+    }).catch(error => {
+      console.log(error.name)
+      res.status(404).end()
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -83,14 +85,19 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({error: 'duplicate name entry'})
   }
 
-  //const person = new Person ({
-  //  name: body.name,
-  //  number: body.number
-  //})
+  const person = new Person ({
+    name: body.name,
+    number: body.number
+  })
 
-
-  //persons = persons.concat(person)
-  //res.json(person)
+  person
+    .save()
+    .then(savedPerson => {
+      res.json(Person.format(savedPerson))
+    }).catch(error => {
+      console.log(error.name)
+      res.status(400).end()
+    })
 })
 
 const PORT = process.env.PORT || 3001

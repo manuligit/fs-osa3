@@ -8,4 +8,13 @@ const Person = mongoose.model('Person', {
   number: String
 })
 
+Person.format = function (person) {
+  return {
+    name: person.name,
+    number: person.number,
+    id: person._id
+  }
+  //return this.find({ name: new RegExp(name, 'i') }, cb);
+}
+
 module.exports = Person

@@ -3,8 +3,8 @@ const bodyPerser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
-const mongoose = require('mongoose')
 const secreturl = require('./secret')
+const Person = require('./models/person')
 
 let persons =[
   {
@@ -28,21 +28,12 @@ let persons =[
     "id": 4
   }
 ]
-
-mongoose.connect(secreturl)
-
-const Person = mongoose.model('Person', {
-  name: String,
-  number: String
-})
-
 app.use(express.static('build'))
 
 app.use(cors())
 app.use(bodyPerser.json())
 
 morgan.token('json', function(req, res) { return JSON.stringify(req.body) })
-
 app.use(morgan(':method :url :json :status :res[content-length] :response-time ms'))
 
 app.get('/info', (req, res) => {
@@ -51,7 +42,11 @@ app.get('/info', (req, res) => {
 })
 //method url {} id headers reqlength - response time 
 app.get('/api/persons', (req, res) => {
-  res.json(persons)
+  Person
+    .find({})
+    .then(persons => {
+      res.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -88,14 +83,14 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).json({error: 'duplicate name entry'})
   }
 
-  const person = {
-    name: body.name,
-    number: body.number,
-    id: generateId()
-  }
+  //const person = new Person ({
+  //  name: body.name,
+  //  number: body.number
+  //})
 
-  persons = persons.concat(person)
-  res.json(person)
+
+  //persons = persons.concat(person)
+  //res.json(person)
 })
 
 const PORT = process.env.PORT || 3001

@@ -6,28 +6,6 @@ const app = express()
 const secreturl = require('./secret')
 const Person = require('./models/person')
 
-let persons =[
-  {
-    "name": "Arto Hellas",
-    "number": "040-123456",
-    "id": 1
-  },
-  {
-    "name": "Martti Tienari",
-    "number": "040-123456",
-    "id": 2
-  },
-  {
-    "name": "Arto Järvinen",
-    "number": "040-123456",
-    "id": 3
-  },
-  {
-    "name": "Lea Kutvonen",
-    "number": "040-123456",
-    "id": 4
-  }
-]
 app.use(express.static('build'))
 
 app.use(cors())
@@ -63,33 +41,17 @@ app.get('/api/persons/:id', (req, res) => {
     })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  Person
-    .findByIdAndRemove(req.params.id)
-    .then(result => {
-      console.log('snib')
-      res.status(204).end()
-    })
-    .catch(error => {
-      console.log('snab')
-      console.log(req.params.id)
-      res.status(400).send({ error: 'malformatted id'})
-    })
-})
-
 const generateId = () => {
   return Math.floor(Math.random() * Math.floor(100000))
 }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persgit ons', (req, res) => {
   const body = req.body
   morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
   if (!body.name) {
     return res.status(400).json({error: 'name missing'})
   } else if (!body.number) {
     return res.status(400).json({error: 'number missing'})
-  } else if (persons.find(person => person.name === body.name)) {
-    return res.status(400).json({error: 'duplicate name entry'})
   }
 
   const person = new Person ({
@@ -104,6 +66,37 @@ app.post('/api/persons', (req, res) => {
     }).catch(error => {
       console.log(error.name)
       res.status(400).end()
+    })
+})
+
+app.put('/api/persons/:id', (req, res) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person
+    .findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatedPerson => {
+      res.json(Person.format(updatedPerson))
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'malformatted id' })
+    })
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  Person
+    .findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(error => {
+      console.log(req.params.id)
+      res.status(400).send({ error: 'malformatted id'})
     })
 })
 

@@ -16,7 +16,17 @@ app.use(morgan(':method :url :json :status :res[content-length] :response-time m
 
 app.get('/info', (req, res) => {
   let timestamp = new Date()
-  res.send(`<p>puhelinluettelossa ${persons.length} henkilon tiedot <br /> ${timestamp}</p>`)
+  let number = 0
+  Person.count({}, function (err, count) {
+    if (err) {
+      console.log('errer')
+      number = 0}
+    console.log(count)
+    number = Number(count)
+    res.send(`<p>puhelinluettelossa ${number} henkilon tiedot <br /> ${timestamp}</p>`)
+  })
+
+  //res.send(`<p>puhelinluettelossa ${number} henkilon tiedot <br /> ${timestamp}</p>`)
 })
 //method url {} id headers reqlength - response time 
 app.get('/api/persons', (req, res) => {

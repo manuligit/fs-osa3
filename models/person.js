@@ -4,8 +4,12 @@ const url = require('../secret')
 mongoose.connect(url)
 
 const Person = mongoose.model('Person', {
-  name: String,
-  number: String
+  name: { 
+    type: String,
+    required: [true, 'name is required']},
+  number: {
+    type: String,
+    required: [true, 'number is required']}
 })
 
 Person.format = function (person) {

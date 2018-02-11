@@ -51,32 +51,43 @@ app.get('/api/persons/:id', (req, res) => {
     })
 })
 
-const generateId = () => {
-  return Math.floor(Math.random() * Math.floor(100000))
-}
-
 app.post('/api/persons', (req, res) => {
   const body = req.body
   morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
-  if (!body.name) {
-    return res.status(400).json({error: 'name missing'})
-  } else if (!body.number) {
-    return res.status(400).json({error: 'number missing'})
-  }
-
+  
   const person = new Person ({
     name: body.name,
     number: body.number
   })
 
-  person
-    .save()
-    .then(savedPerson => {
-      res.json(Person.format(savedPerson))
-    }).catch(error => {
-      console.log(error.name)
-      res.status(400).end()
+  Person
+    .find({name: body.name})
+    .then(result => {
+      if (result.length > 0) {
+        console.log('name already exists in db')
+        throw new Error('duplicate name')
+        return null
+      } else {
+        return true
+      }
     })
+    .then(result => {
+      if (result) {
+        person
+        .save()
+        .then(savedPerson => {
+          return Person.format(savedPerson)
+          }).then(formattedPerson => {
+            res.json(formattedPerson)
+          }).catch(error => {
+          console.log(error.name)
+          res.status(400).end()
+        })
+      }
+    }).catch(error => {
+      console.log(error)
+      res.status(400).send({ error: 'bad request' })
+  })
 })
 
 app.put('/api/persons/:id', (req, res) => {

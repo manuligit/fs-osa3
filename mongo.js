@@ -38,17 +38,3 @@ if (args.length === 2) {
   } else {
     mongoose.connection.close()
   }
-
-// const note = new Note ({
-//   content: "HTML on helppoa",
-//   date: new Date(),
-//   important: true
-// })
-
-
-// note  
-//   .save()
-//   .then(response => {
-//     console.log('note saved!')
-//     mongoose.connection.close()
-//   })

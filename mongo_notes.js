@@ -14,13 +14,13 @@ const Note = mongoose.model('Note', {
 })
 
 Note
-.find({})
-.then(result => {
-  result.forEach(note => {
-    console.log(note)
+  .find({})
+  .then(result => {
+    result.forEach(note => {
+      console.log(note)
+    })
+    mongoose.connection.close()
   })
-  mongoose.connection.close()
-})
 
 // const note = new Note ({
 //   content: "HTML on helppoa",
@@ -29,7 +29,7 @@ Note
 // })
 
 
-// note  
+// note
 //   .save()
 //   .then(response => {
 //     console.log('note saved!')

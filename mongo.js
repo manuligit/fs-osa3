@@ -15,7 +15,7 @@ const Person = mongoose.model('Person', {
 const args = process.argv
 
 if (args.length === 2) {
-  console.log("Puhelinluettelo: ")
+  console.log('Puhelinluettelo: ')
 
   Person
     .find({})
@@ -27,7 +27,7 @@ if (args.length === 2) {
     })
 
 } else if (args.length > 3) {
-  console.log("lisätään henkilö", args[2], "numero", args[3], "luetteloon")
+  console.log('lisätään henkilö', args[2], 'numero', args[3], 'luetteloon')
   const person = new Person ({
     name: args[2],
     number: args[3]
@@ -36,9 +36,10 @@ if (args.length === 2) {
   person
     .save()
     .then(response => {
-      console.log("person saved!")
+      console.log(response.body)
+      console.log('person saved!')
       mongoose.connection.close()
     })
-  } else {
-    mongoose.connection.close()
-  }
+} else {
+  mongoose.connection.close()
+}

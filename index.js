@@ -10,7 +10,7 @@ app.use(express.static('build'))
 app.use(cors())
 app.use(bodyPerser.json())
 
-morgan.token('json', function(req, res) { return JSON.stringify(req.body) })
+morgan.token('json', function(req) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :json :status :res[content-length] :response-time ms'))
 
 app.get('/info', (req, res) => {
@@ -27,7 +27,7 @@ app.get('/info', (req, res) => {
 
   //res.send(`<p>puhelinluettelossa ${number} henkilon tiedot <br /> ${timestamp}</p>`)
 })
-//method url {} id headers reqlength - response time 
+//method url {} id headers reqlength - response time
 app.get('/api/persons', (req, res) => {
   Person
     .find({})
@@ -52,20 +52,20 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
-  morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
-  
+  //  morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
+  morgan.token('type', function(req) { return JSON.stringify(req.headers['content-type'])})
+
   const person = new Person ({
     name: body.name,
     number: body.number
   })
 
   Person
-    .find({name: body.name})
+    .find({ name: body.name })
     .then(result => {
       if (result.length > 0) {
         console.log('name already exists in db')
         throw new Error('duplicate name')
-        return null
       } else {
         return true
       }
@@ -73,20 +73,20 @@ app.post('/api/persons', (req, res) => {
     .then(result => {
       if (result) {
         person
-        .save()
-        .then(savedPerson => {
-          return Person.format(savedPerson)
+          .save()
+          .then(savedPerson => {
+            return Person.format(savedPerson)
           }).then(formattedPerson => {
             res.json(formattedPerson)
           }).catch(error => {
-          console.log(error.name)
-          res.status(400).end()
-        })
+            console.log(error.name)
+            res.status(400).end()
+          })
       }
     }).catch(error => {
       console.log(error)
       res.status(400).send({ error: 'bad request' })
-  })
+    })
 })
 
 app.put('/api/persons/:id', (req, res) => {
@@ -111,12 +111,10 @@ app.put('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
   Person
     .findByIdAndRemove(req.params.id)
-    .then(result => {
-      res.status(204).end()
-    })
+    .then( res.status(204).end() )
     .catch(error => {
-      console.log(req.params.id)
-      res.status(400).send({ error: 'malformatted id'})
+      console.log(error.name)
+      res.status(400).send({ error: 'malformatted id' })
     })
 })
 

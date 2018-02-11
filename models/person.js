@@ -7,12 +7,12 @@ const url = process.env.MONGODB_URI
 mongoose.connect(url)
 
 const Person = mongoose.model('Person', {
-  name: { 
+  name: {
     type: String,
-    required: [true, 'name is required']},
+    required: [true, 'name is required'] },
   number: {
     type: String,
-    required: [true, 'number is required']}
+    required: [true, 'number is required'] }
 })
 
 Person.format = function (person) {

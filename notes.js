@@ -57,7 +57,7 @@ app.post('/api/notes', (request, response) => {
   const body = request.body
 
   if (body.content === undefined) {
-    return response.status(400).json({error: 'content missing'})
+    return response.status(400).json({ error: 'content missing' })
   }
 
   const note = new Note({
@@ -95,11 +95,10 @@ app.put('/api/notes/:id', (request, response) => {
 app.delete('/api/notes/:id', (request, response) => {
   Note
     .findByIdAndRemove(request.params.id)
-    .then(result => {
-      response.status(204).end()
-    })
+    .then(response.status(204).end())
     .catch(error => {
-      response.status(400).send({ error: 'malformatted id'})
+      console.log(error.name)
+      response.status(400).send({ error: 'malformatted id' })
     })
 
 })

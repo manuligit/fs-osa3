@@ -45,7 +45,7 @@ const generateId = () => {
   return Math.floor(Math.random() * Math.floor(100000))
 }
 
-app.post('/api/persgit ons', (req, res) => {
+app.post('/api/persons', (req, res) => {
   const body = req.body
   morgan.token('type', function(req, res) { return JSON.stringify(req.headers['content-type'])})
   if (!body.name) {

@@ -64,10 +64,17 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  persons = persons.filter(person => person.id !== id)
-
-  res.status(204).end()
+  Person
+    .findByIdAndRemove(req.params.id)
+    .then(result => {
+      console.log('snib')
+      res.status(204).end()
+    })
+    .catch(error => {
+      console.log('snab')
+      console.log(req.params.id)
+      res.status(400).send({ error: 'malformatted id'})
+    })
 })
 
 const generateId = () => {

@@ -5,34 +5,18 @@ const cors = require('cors')
 const Note = require('./models/note')
 const secreturl = require('./secret')
 
-let notes = [
-  {
-    id: 1,
-    content: 'HTML on helppoa',
-    date: '2017-12-10T17:30:31.098Z',
-    important: true
-  },
-  {
-    id: 2,
-    content: 'Selain pystyy suorittamaan vain javascriptiä',
-    date: '2017-12-10T18:39:34.091Z',
-    important: false
-  },
-  {
-    id: 3,
-    content: 'HTTP-protokollan tärkeimmät metodit ovat GET ja POST',
-    date: '2017-12-10T19:20:14.298Z',
-    important: true
-  }
-]
+const logger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
 
 app.use(cors())
 app.use(bodyPerser.json())
 
-const generateId = () => {
-  const maxId = notes.length > 0 ? notes.map(n => n.id).sort().reverse()[0] : 1
-  return maxId + 1
-}
+app.use(logger)
 
 const formatNote = (note) => {
   const formattedNote = { ...note._doc, id: note._id }
@@ -41,6 +25,34 @@ const formatNote = (note) => {
 
   return formattedNote
 }
+
+app.get('/', (req, res) => {
+  res.send('<h1>Hello World!</h1>')
+})
+
+app.get('/api/notes', (request, response) => {
+  Note
+    .find({})
+    .then(notes => {
+      response.json(notes)
+    })
+})
+
+app.get('/api/notes/:id', (request, response) => {
+  Note
+    .findById(request.params.id)
+    .then(note => {
+      if (note) {
+        response.json(formatNote(note))
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
+})
 
 app.post('/api/notes', (request, response) => {
   const body = request.body
@@ -62,32 +74,43 @@ app.post('/api/notes', (request, response) => {
     })
 })
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World!</h1>')
-})
+app.put('/api/notes/:id', (request, response) => {
+  const body = request.body
 
-app.get('/api/notes', (request, response) => {
+  const note = {
+    content: body.content,
+    important: body.important
+  }
+
   Note
-    .find({})
-    .then(notes => {
-      response.json(notes)
+    .findByIdAndUpdate(request.params.id, note, { new: true } )
+    .then(updatedNote => {
+      response.json(formatNote(updatedNote))
     })
-})
-
-app.get('/api/notes/:id', (request, response) => {
-  Note
-    .findById(request.params.id)
-    .then(note => {
-      response.json(formatNote(note))
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
     })
 })
 
 app.delete('/api/notes/:id', (request, response) => {
-  const id = Number(request.params.id)
-  notes = notes.filter(note => note.id !== id)
+  Note
+    .findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => {
+      response.status(400).send({ error: 'malformatted id'})
+    })
 
-    response.status(204).end()
 })
+
+const error = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(error)
+
 
 const PORT = 3001
 app.listen(PORT, () => {

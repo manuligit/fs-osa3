@@ -1,7 +1,12 @@
 const mongoose = require('mongoose')
-const secreturl = require('./secret')
+if ( process.env.NODE_ENV !== 'production' ) {
+  require('dotenv').config()
+}
 
-mongoose.connect(secreturl)
+const url = process.env.MONGODB_URI
+
+
+mongoose.connect(url)
 
 const Person = mongoose.model('Person', {
   name: String,

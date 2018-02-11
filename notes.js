@@ -3,7 +3,6 @@ const app = express()
 const bodyPerser = require('body-parser')
 const cors = require('cors')
 const Note = require('./models/note')
-const secreturl = require('./secret')
 
 const logger = (request, response, next) => {
   console.log('Method:', request.method)

@@ -3,7 +3,6 @@ const bodyPerser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
-const secreturl = require('./secret')
 const Person = require('./models/person')
 
 app.use(express.static('build'))

@@ -3,3 +3,4 @@ node_modules/
 .DS_Store
 secret.js
 .env
+notes2.js
